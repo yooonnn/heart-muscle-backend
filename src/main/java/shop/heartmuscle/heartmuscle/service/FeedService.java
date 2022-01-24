@@ -42,7 +42,7 @@ public class FeedService {
         if(feedRequestDto.getImage() != null) url = awsService.upload(feedRequestDto.getImage());
         else url = "https://teamco-spring-project.s3.ap-northeast-2.amazonaws.com/logo.png";
         User user = userRepository.findById(nowUser.getId()).orElseThrow(
-                () -> new NullPointerException("해당 User 없음")
+                () -> new NullPointerException("사용자 정보가 존재하지 않습니다.")
         );
 
         Feed feed = new Feed(feedRequestDto, url, user);
@@ -55,12 +55,7 @@ public class FeedService {
         return feed;
     }
 
-    // 피드 전체 목록 가져오기 [ version 1 ]
-    //    public List<Feed> getFeeds() {
-    //        return feedRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-    //    }
-
-    // 피드 전체 목록 가져오기 + 페이징 처리 [ version 2 ]
+    // 피드 전체 목록 + 페이징 처리
     public Page<Feed> getFeeds(int page, int size, String sortBy, boolean isAsc) {
         Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
         Sort sort = Sort.by(direction, sortBy);
@@ -68,10 +63,10 @@ public class FeedService {
         return feedRepository.findAll(pageable);
     }
 
-    // 피드 하나 상세 조회
+    // 피드 상세 조회
     public Feed getFeed(Long id) {
         return feedRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("피드가 존재하지 않습니다.")
+                () -> new NullPointerException("게시글이 존재하지 않습니다.")
         );
     }
 
@@ -85,7 +80,7 @@ public class FeedService {
 
         // 피드 작성자 아이디 조회 (feeduser)
         Feed checkfeed = feedRepository.findById(id).orElseThrow(
-                () -> new NullPointerException("피드가 존재하지 않습니다.")
+                () -> new NullPointerException("게시글이 존재하지 않습니다.")
         );
 
         User findfeeduser = checkfeed.getUser(); // 해당 User
@@ -101,7 +96,7 @@ public class FeedService {
     @Transactional
     public Long update(Long id, FeedRequestDto feedRequestDto) {
         Feed feed = feedRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("피드가 존재하지 않습니다.")
+                () -> new IllegalArgumentException("게시글이 존재하지 않습니다.")
         );
         feed.update(feedRequestDto);
         return feed.getId();
@@ -116,11 +111,11 @@ public class FeedService {
     @Transactional
     public void createComment(CommentRequestDto commentRequestDto, UserDetailsImpl nowUser) throws IOException  {
         Feed feed = feedRepository.findById(commentRequestDto.getId()).orElseThrow(
-                () -> new NullPointerException("대상 게시글이 존재하지 않습니다.")
+                () -> new NullPointerException("게시글이 존재하지 않습니다.")
         );
 
         User user = userRepository.findById(nowUser.getId()).orElseThrow(
-                () -> new NullPointerException("해당 User 없음")
+                () -> new NullPointerException("사용자 정보가 존재하지 않습니다.")
         );
 
         String commentUser = user.getUsername();
