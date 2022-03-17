@@ -18,7 +18,6 @@ public class FeedController {
 
     private final FeedService feedService;
 
-
     // 피드 작성
     @Operation(description = "피드 저장하기", method = "POST")
     @PostMapping("/feed")
@@ -29,7 +28,7 @@ public class FeedController {
     // 피드 목록 + 페이징
     @Operation(description = "피드 목록 불러오기", method = "GET")
     @GetMapping("/feed")
-    public Page<Feed> getFeedResponses(@RequestParam("page") int page,
+    public Page<Feed> getFeeds(@RequestParam("page") int page,
                                        @RequestParam("size") int size,
                                        @RequestParam("sortBy") String sortBy,
                                        @RequestParam("isAsc") boolean isAsc) {
@@ -70,7 +69,7 @@ public class FeedController {
     // 댓글 작성
     @Operation(description = "피드에 댓글 작성하기", method = "POST")
     @PostMapping("/feed/comment")
-    public void createComment(@RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl nowUser) throws IOException {
-        feedService.createComment(commentRequestDto, nowUser);
+    public void saveComment(@RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl nowUser) throws IOException {
+        feedService.saveComment(commentRequestDto, nowUser);
     }
 }
